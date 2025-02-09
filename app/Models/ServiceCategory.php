@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ServiceCategory extends Model {
+
+    use HasFactory;
     protected $fillable = ['name', 'image'];
     public function subservices() {
-        return $this->hasMany(Subservice::class);
+        return $this->hasMany(Subservice::class, 'category_id', 'id');
     }
+    
 }
 

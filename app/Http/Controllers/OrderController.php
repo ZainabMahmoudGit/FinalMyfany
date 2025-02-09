@@ -27,6 +27,7 @@ class OrderController extends Controller {
             'service_time' => 'required|date',
             'lat' => 'required|numeric',   
             'lng' => 'required|numeric',  
+      
         ]);
     
         if ($validator->fails()) {
@@ -71,3 +72,4 @@ class OrderController extends Controller {
         return response()->json(['message' => 'Order deleted successfully']);
     }
 }
+
