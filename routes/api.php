@@ -1,34 +1,38 @@
 <?php
 
-use App\Http\Controllers\DriverController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OTPController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PackageController;
+use App\Http\Controllers\ServiceCategoryController;
+use App\Http\Controllers\SubserviceController;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+use Illuminate\Http\Request;
 
 
-Route::middleware('api')->group(function () {
-    
-  
+Route::get('/countries', [LocationController::class, 'getCountries']); 
+Route::get('/areas/{countryId}', [LocationController::class, 'getAreas']); 
+Route::get('/area/{id}', [LocationController::class, 'getAreaDetails']); 
 
-  Route::post('/send-otp', [OTPController::class, 'sendOtp']);
-  Route::post('/verify-otp', [OTPController::class, 'verifyOtp']);
-  Route::post('/update-profile', [OTPController::class, 'updateProfile']);
-
-
-  Route::get('/users/{id}', [OTPController::class, 'indexUser']);
-  Route::put('/users/{id}', [OTPController::class, 'updateUser']);
-  Route::delete('/users/{id}', [OTPController::class, 'deleteUser']);
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
 
 
-  Route::prefix('drivers')->group(function () {
-    Route::post('send-otp', [DriverController::class, 'sendOtp']);
-    Route::post('verify-otp', [DriverController::class, 'verifyOtp']);
-    Route::put('update-profile', [DriverController::class, 'updateProfile']);
-    Route::get('/', [DriverController::class, 'index']);
-    Route::get('{id}', [DriverController::class, 'indexDriver']);
-    Route::delete('{id}', [DriverController::class, 'deleteDriver']);
+Route::apiResource('service-categories', ServiceCategoryController::class);
+Route::apiResource('subservices', SubserviceController::class);
+Route::apiResource('packages', PackageController::class);
 
-  });
+Route::apiResource('orders', OrderController::class);
 
+
+Route::middleware([EnsureFrontendRequestsAreStateful::class, 'auth:sanctum'])->get('/user', function (Request $request) {
+    return $request->user();
 });
 
-
+Route::get('/test', function () {
+    return response()->json([
+        'message' => 'API is working successfully!',
+        'status' => 200
+    ]);
+});
